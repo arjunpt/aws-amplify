@@ -3,14 +3,14 @@ name: Deploy to AWS Amplify
 on:
   push:
     branches:
-      - master  # Trigger on pushes to the main branch
+      - master  # Trigger deployment on push to main branch
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Repository
+    - name: Checkout code
       uses: actions/checkout@v3
 
     - name: Set up Python
@@ -18,30 +18,24 @@ jobs:
       with:
         python-version: '3.9'
 
-    - name: Install Dependencies
+    - name: Install dependencies
       run: |
-        echo "Installing dependencies"
         pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Build Static Site
+    - name: Build Static Files
       run: |
-        echo "Building static files"
-        python freeze.py  # Generate the static files into the ./build directory
+        python freeze.py  # This generates static files in ./build
 
-    - name: Zip Build Directory
+    - name: Install Amplify CLI
       run: |
-        echo "Creating zip of the build directory"
-        zip -r build.zip ./build  # Zip the build directory
+        npm install -g @aws-amplify/cli
 
     - name: Deploy to AWS Amplify
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_REGION: us-east-1
+        AMPLIFY_APP_ID: d2a5heqc1vs1ae
       run: |
-        echo "Deploying to AWS Amplify"
-        aws amplify start-deployment \
-          --app-id d2a5heqc1vs1ae \
-          --branch-name master \
-          --source-url fileb://$(pwd)/build.zip  # Deploy using the zipped file with binary URL
+        amplify publish --yes
