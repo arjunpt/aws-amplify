@@ -1,9 +1,9 @@
-name: 'Deploy Flask App to AWS Amplify'
+name: 'Deploy Flask Static Site to AWS Amplify'
 
 on:
   push:
     branches:
-      - master  # Change to your desired branch
+      - master  # Adjust to the branch you want to deploy from
 
 jobs:
   deploy:
@@ -15,35 +15,30 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v2
 
-    # Step 2: Set up Python
+    # Step 2: Set up Python environment
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
         python-version: '3.9'
 
-    # Step 3: Set up virtual environment
-    - name: Install Dependencies
+    # Step 3: Install dependencies and freeze Flask app
+    - name: Install Dependencies and Build Static Site
       run: |
+        echo "Creating virtual environment and installing dependencies"
         python -m venv venv
         source venv/bin/activate
         pip install --upgrade pip
         pip install -r requirements.txt
+        echo "Freezing the Flask app"
+        python freeze.py  # Generates static files into the 'build' directory
 
-    # Step 4: Build static files
-    - name: Build Static Files
-      run: |
-        source venv/bin/activate
-        python freeze.py  # Adjust to your static site generator
-
-    # Step 5: Deploy to Amplify
+    # Step 4: Deploy static files to AWS Amplify Hosting
     - name: Deploy to AWS Amplify
       uses: ambientlight/amplify-cli-action@0.3.0
       with:
-        amplify_command: publish
-        amplify_env: dev
-        source_dir: "build"  # Adjust to match the directory containing your static files
-        distribution_dir: "dist"  # Change if needed
-        build_command: "npm run build"  # Update if you have specific build steps
+        amplify_command: publish  # Command to deploy the site
+        source_dir: "build"       # Directory where static files are located
+        amplify_env: dev          # Amplify environment (use 'dev' or as configured)
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
