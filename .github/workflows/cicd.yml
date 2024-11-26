@@ -38,4 +38,5 @@ jobs:
         aws amplify start-deployment \
           --app-id d2a5heqc1vs1ae \
           --branch-name master \
-          --source ./build
+          --source-url file://$(pwd)/build  # Specify the correct source URL (local directory)
+  
