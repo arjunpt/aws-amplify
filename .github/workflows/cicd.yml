@@ -19,18 +19,23 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: '3.8'  # Specify Python version here (e.g., 3.8 or 3.x)
+        python-version: '3.9'  # Specify Python version here (e.g., 3.8 or 3.x)
 
-    # Step 3: Install Python dependencies
+    - name: Create virtual environment
+      run: |
+        python -m venv venv  # Create a virtual environment
+        source venv/bin/activate  # Activate the virtual environment
+
     - name: Install dependencies
       run: |
-        pip install --upgrade pip
-        pip install -r requirements.txt  # Install dependencies from your requirements.txt
+        source venv/bin/activate
+        pip install -r requirements.txt  # Install dependencies
 
-    # Step 4: Freeze the Flask app to generate static files (e.g., in 'build' directory)
-    - name: Freeze Flask App
+    - name: Run build and tests (if any)
       run: |
-        python freeze.py  # This command should generate static files using Flask-Frozen
+        source venv/bin/activate
+        python freeze.py  # or your build command
+
 
     # Step 5: Configure AWS Amplify
     - name: Configure Amplify
