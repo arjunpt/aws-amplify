@@ -39,14 +39,20 @@ jobs:
           echo "Zipping build directory"
           zip -r myapp.zip ./build  # Adjust the path if necessary
 
-      # Step 6: Deploy to AWS Amplify
+      # Step 6: Set up Node.js (to address the ES module issue)
+      - name: Set up Node.js (v18)
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'  # Using an older Node.js version to avoid ES module issues
+
+      # Step 7: Deploy to AWS Amplify
       - name: Deploy to AWS Amplify
         uses: luisgreen/amplify_deployment@main
         with:
           appId: 'd2a5heqc1vs1ae'  # Your Amplify App ID
           branchName: 'master'  # The branch you are deploying to (e.g., 'master')
           artifactPath: './myapp.zip'  # Path to the zip file containing the build
-          region: 'us-east-1'  # The AWS region where your Amplify app is hosted
+          region: 'us-west-2'  # The AWS region where your Amplify app is hosted
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}  # GitHub Secrets for AWS credentials
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
