@@ -3,7 +3,7 @@ name: 'Deploy Flask App to AWS Amplify'
 on:
   push:
     branches:
-      - master  # Change to your desired branch for deployment
+      - master  # Change to your desired branch
 
 jobs:
   deploy:
@@ -21,27 +21,29 @@ jobs:
       with:
         python-version: '3.9'
 
-    # Step 3: Create and activate a virtual environment
-    - name: Set up Virtual Environment
+    # Step 3: Set up virtual environment
+    - name: Install Dependencies
       run: |
         python -m venv venv
         source venv/bin/activate
         pip install --upgrade pip
-        pip install -r requirements.txt  # Install dependencies
+        pip install -r requirements.txt
 
-    # Step 4: Build the static site
-    - name: Build Static Site
+    # Step 4: Build static files
+    - name: Build Static Files
       run: |
         source venv/bin/activate
-        python freeze.py  # Replace with your build command
+        python freeze.py  # Adjust to your static site generator
 
-    # Step 5: Deploy static files to AWS Amplify
+    # Step 5: Deploy to Amplify
     - name: Deploy to AWS Amplify
       uses: ambientlight/amplify-cli-action@0.3.0
       with:
         amplify_command: publish
         amplify_env: dev
-        amplify_app_id: d2a5heqc1vs1ae
+        source_dir: "build"  # Adjust to match the directory containing your static files
+        distribution_dir: "dist"  # Change if needed
+        build_command: "npm run build"  # Update if you have specific build steps
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
