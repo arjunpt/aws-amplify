@@ -42,6 +42,8 @@ jobs:
       uses: ambientlight/amplify-cli-action@0.3.0
       with:
         amplify_command: configure
+        amplify_env: dev
+        amplify_app_id: d2a5heqc1vs1ae
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}  # AWS Access Key ID (stored as secret)
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}  # AWS Secret Access Key (stored as secret)
