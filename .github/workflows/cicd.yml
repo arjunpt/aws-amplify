@@ -1,61 +1,32 @@
-name: 'Deploy Flask App to AWS Amplify'
-
-on:
-  push:
-    branches:
-      - master  # Change this to the branch you want to deploy from (e.g., 'main', 'master', etc.)
+name: 'Amplify Deploy'
+on: [push]
 
 jobs:
   deploy:
-    name: Deploy Flask Static Site to AWS Amplify
-    runs-on: ubuntu-latest  # Use the latest Ubuntu runner
+    runs-on: ubuntu-latest
 
     steps:
-    # Step 1: Checkout the repository
-    - name: Checkout Code
-      uses: actions/checkout@v2
-
-    # Step 2: Set up Python for the environment
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.9'  # Specify Python version here (e.g., 3.8 or 3.x)
-
-    - name: Create virtual environment
-      run: |
-        python -m venv venv  # Create a virtual environment
-        source venv/bin/activate  # Activate the virtual environment
+    - uses: actions/checkout@v2
+    
+    - name: Amplify Pull
+      run: amplify pull --appId d2a5heqc1vs1ae --envName dev --yes
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_REGION: us-east-1
 
     - name: Install dependencies
       run: |
-        source venv/bin/activate
-        pip install -r requirements.txt  # Install dependencies
+        pip install --upgrade pip
+        pip install -r requirements.txt  # Install Python dependencies
 
-    - name: Run build and tests (if any)
+    - name: Build and freeze the app
       run: |
-        source venv/bin/activate
-        python freeze.py  # or your build command
+        python freeze.py   # Generate static files
 
-
-    # Step 5: Configure AWS Amplify
-    - name: Configure Amplify
-      uses: ambientlight/amplify-cli-action@0.3.0
-      with:
-        amplify_command: configure
-        amplify_env: dev
-        amplify_app_id: d2a5heqc1vs1ae
+    - name: Deploy to Amplify
+      run: amplify publish --yes
       env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}  # AWS Access Key ID (stored as secret)
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}  # AWS Secret Access Key (stored as secret)
-        AWS_REGION: us-east-1  # Change to your AWS region
-
-    # Step 6: Deploy the static files to AWS Amplify
-    - name: Deploy to AWS Amplify
-      uses: ambientlight/amplify-cli-action@0.3.0
-      with:
-        amplify_command: publish  # This deploys the generated static files
-        amplify_app_id: d2a5heqc1vs1ae
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}  # AWS Access Key ID (stored as secret)
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}  # AWS Secret Access Key (stored as secret)
-        AWS_REGION: us-east-1  # Change to your AWS region
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_REGION: us-east-1
