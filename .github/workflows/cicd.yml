@@ -43,4 +43,4 @@ jobs:
         aws amplify start-deployment \
           --app-id d2a5heqc1vs1ae \
           --branch-name master \
-          --source-url file://$(pwd)/build.zip  # Deploy using the zipped file
+          --source-url fileb://$(pwd)/build.zip  # Deploy using the zipped file with binary URL
