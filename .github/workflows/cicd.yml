@@ -35,7 +35,7 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       run: |
         echo "Deploying to AWS Amplify"
-        npx amplify-app sync \
+        aws amplify start-deployment \
           --app-id d2a5heqc1vs1ae \
           --branch-name master \
-          --path build
+          --source ./build
