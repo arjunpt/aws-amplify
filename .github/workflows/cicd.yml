@@ -1,41 +1,55 @@
-name: Deploy to AWS Amplify
+name: Deploy Flask App to AWS Amplify
 
 on:
   push:
     branches:
-      - master  # Trigger deployment on push to main branch
+      - master  # Trigger the pipeline on push to the main branch
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      # Step 1: Checkout the code from GitHub
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.9'
+      # Step 2: Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'  # Specify the Python version
 
-    - name: Install dependencies
-      run: |
-        pip install --upgrade pip
-        pip install -r requirements.txt
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: |
+          echo "Installing dependencies"
+          pip install --upgrade pip
+          pip install -r requirements.txt  # Install Python dependencies
 
-    - name: Build Static Files
-      run: |
-        python freeze.py  # This generates static files in ./build
+      # Step 4: Freeze Flask app to static site (using Flask-Frozen)
+      - name: Freeze Flask app
+        run: |
+          echo "Freezing the Flask app"
+          python freeze.py   # This will generate the static site using Flask-Frozen
 
-    - name: Install Amplify CLI
-      run: |
-        npm install -g @aws-amplify/cli
+      # Step 5: Install AWS Amplify CLI
+      - name: Install Amplify CLI
+        run: |
+          npm install -g @aws-amplify/cli
+          amplify --version  # Verify installation
 
-    - name: Deploy to AWS Amplify
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_REGION: us-east-1
-        AMPLIFY_APP_ID: d2a5heqc1vs1ae
-      run: |
-        amplify publish --yes
+      # Step 6: Pull the existing Amplify project (to get backend configuration)
+      - name: Pull existing Amplify project
+        run: |
+          amplify pull --appId d2a5heqc1vs1ae --envName production --yes  # Use your appId and environment
+
+      # Step 7: Deploy to AWS Amplify
+      - name: Deploy to AWS Amplify
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: 'us-east-1'  # Your AWS Region
+        run: |
+          echo "Deploying to AWS Amplify"
+          amplify publish --yes  # Deploy to Amplify
