@@ -39,7 +39,6 @@ jobs:
           --app-id d2a5heqc1vs1ae \
           --branch-name master \
           --job-type RELEASE \
-          --source-directory build
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
