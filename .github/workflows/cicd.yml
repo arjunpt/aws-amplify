@@ -3,7 +3,7 @@ name: Deploy Flask App to AWS Amplify
 on:
   push:
     branches:
-      - main  # Trigger the pipeline on push to the main branch
+      - master  # Trigger the pipeline on push to the main branch
 
 jobs:
   deploy:
