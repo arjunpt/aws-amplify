@@ -3,7 +3,7 @@ name: Deploy Flask App to AWS Amplify
 on:
   push:
     branches:
-      - master  # Trigger the pipeline on push to the main branch
+      - main  # Trigger the pipeline on push to the main branch
 
 jobs:
   deploy:
@@ -33,23 +33,20 @@ jobs:
           echo "Freezing the Flask app"
           python freeze.py   # This will generate the static site using Flask-Frozen
 
-      # Step 5: Install AWS Amplify CLI
-      - name: Install Amplify CLI
+      # Step 5: Create a zip of the build directory (if needed)
+      - name: Create zip of build directory
         run: |
-          npm install -g @aws-amplify/cli
-          amplify --version  # Verify installation
+          echo "Zipping build directory"
+          zip -r myapp.zip ./build  # Adjust the path if necessary
 
-      # Step 6: Pull the existing Amplify project (to get backend configuration)
-      - name: Pull existing Amplify project
-        run: |
-          amplify pull --appId d2a5heqc1vs1ae --envName production --headless --yes  # Add --headless flag
-
-      # Step 7: Deploy to AWS Amplify
+      # Step 6: Deploy to AWS Amplify
       - name: Deploy to AWS Amplify
+        uses: luisgreen/amplify_deployment@main
+        with:
+          appId: 'd2a5heqc1vs1ae'  # Your Amplify App ID
+          branchName: 'master'  # The branch you are deploying to (e.g., 'master')
+          artifactPath: './myapp.zip'  # Path to the zip file containing the build
+          region: 'us-east-1'  # The AWS region where your Amplify app is hosted
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}  # GitHub Secrets for AWS credentials
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: 'us-east-1'  # Your AWS Region
-        run: |
-          echo "Deploying to AWS Amplify"
-          amplify publish --yes  # Deploy to Amplify
