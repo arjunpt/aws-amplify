@@ -33,10 +33,15 @@ jobs:
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      run: |
-        echo "Deploying to AWS Amplify"
-        aws amplify start-deployment \
-          --app-id d2a5heqc1vs1ae \
-          --branch-name master \
-          --source-url file://$(pwd)/build  # Specify the correct source URL (local directory)
+        run: |
+          echo "Deploying to AWS Amplify"
+          
+          # Create a zip file of the build directory
+          zip -r build.zip ./build  # Create a zip of the build directory
+          
+          # Deploy to Amplify
+          aws amplify start-deployment \
+            --app-id d2a5heqc1vs1ae \
+            --branch-name master \
+            --source-url file://$(pwd)/build.zip
   
