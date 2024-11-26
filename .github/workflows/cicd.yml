@@ -42,7 +42,7 @@ jobs:
       # Step 6: Pull the existing Amplify project (to get backend configuration)
       - name: Pull existing Amplify project
         run: |
-          amplify pull --appId d2a5heqc1vs1ae --envName production --yes  # Use your appId and environment
+          amplify pull --appId d2a5heqc1vs1ae --envName production --headless --yes  # Add --headless flag
 
       # Step 7: Deploy to AWS Amplify
       - name: Deploy to AWS Amplify
