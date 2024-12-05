@@ -1,4 +1,4 @@
-# **CI/CD Pipeline for Python Static Site on AWS Amplify **
+# **CI/CD Pipeline for Python Static Site on AWS Amplify**
 
 This repository implements a **CI/CD pipeline** to automate **testing**, **code analysis** and **deployment** for a Flask static site deployed on AWS Amplify. The pipeline leverages **GitHub Actions** to ensure code quality, security, and seamless deployment.
 
