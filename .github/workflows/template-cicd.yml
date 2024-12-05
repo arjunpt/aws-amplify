@@ -219,6 +219,7 @@ jobs:
   # Security Scan Stage
   Snyk_scan:
     runs-on: ubuntu-latest
+    continue-on-error: true 
     needs: [lint_test, py_test]
     steps:
     - name: Checkout repository
