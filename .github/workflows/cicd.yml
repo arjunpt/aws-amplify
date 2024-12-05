@@ -6,7 +6,7 @@ on:
 
 jobs:
   Templates:
-    uses: ./.github/workflows/amplify-template-cicd.yml
+    uses: ./.github/workflows/template-cicd.yml
     with:
       python-version: "3.9"
       requirements-path: "src/requirements.txt"
