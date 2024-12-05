@@ -1,0 +1,24 @@
+name: amplify-cicd
+
+on:
+  push:
+    branches: [ "master" ]
+
+jobs:
+  Templates:
+    uses: ./.github/workflows/amplify-template-cicd.yml
+    with:
+      python-version: "3.9"
+      requirements-path: "src/requirements.txt"
+      test-path: "src/test/test.py"
+      snyk-path: "src"
+      amplify_app_id: "d3vrd3xruf21x3"
+      branch-name: "master"
+      job-type: "RELEASE"
+    secrets:
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+      AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
