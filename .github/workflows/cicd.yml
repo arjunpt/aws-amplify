@@ -12,7 +12,7 @@ jobs:
       requirements-path: "src/requirements.txt"
       test-path: "src/test/test.py"
       snyk-path: "src"
-      amplify_app_id: "d3vrd3xruf21x3"
+      amplify_app_id: "dkzh4rdqpizbd"
       branch-name: "master"
       job-type: "RELEASE"
     secrets:
